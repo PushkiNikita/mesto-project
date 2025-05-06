@@ -1,4 +1,5 @@
 import { validationSettings } from "./constants.js";
+import { resetFormValidation } from "./validate.js";
 
 function openModal(popup) {
     popup.classList.add('popup_is-opened');
@@ -17,6 +18,7 @@ function closeModal(popup) {
     if (form) {
         form.reset();
         // Сбрасываем ошибки валидации
+        resetFormValidation(form);
         form.querySelectorAll('.popup__input').forEach(input => {
             input.classList.remove(validationSettings.inputErrorClass);
         });

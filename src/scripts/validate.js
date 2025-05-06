@@ -1,5 +1,24 @@
 import {validationSettings} from "./constants.js";
 
+export const resetFormValidation = (formElement) => {
+    const inputList = Array.from(formElement.querySelectorAll(validationSettings.inputSelector));
+    const buttonElement = formElement.querySelector(validationSettings.submitButtonSelector);
+    
+    inputList.forEach(input => {
+        input.classList.remove(validationSettings.inputErrorClass);
+        const errorElement = formElement.querySelector(`#input-${input.id}-error`);
+        if (errorElement) {
+            errorElement.textContent = '';
+            errorElement.classList.remove(validationSettings.errorClass);
+        }
+    });
+    
+    if (buttonElement) {
+        buttonElement.classList.add(validationSettings.inactiveButtonClass);
+        buttonElement.disabled = true;
+    }
+};
+
 const showInputError = (formElement, inputElement, errorMessage) => {
     const errorElement = formElement.querySelector(`#input-${inputElement.id}-error`);
     inputElement.classList.add(validationSettings.inputErrorClass);
