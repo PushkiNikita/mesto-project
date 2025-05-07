@@ -1,3 +1,4 @@
+let isSaving = false;
 import {
     getInitialCards,
     addNewCard,
@@ -110,8 +111,7 @@ function handleProfileFormSubmit(evt) {
         });
 }
 
-// Функция обработки добавления новой карточки
-function handleCardFormSubmit(evt) {
+/*function handleCardFormSubmit(evt) {
     evt.preventDefault();
     const name = newCardName.value;
     const link = newCardLink.value;
@@ -132,6 +132,44 @@ function handleCardFormSubmit(evt) {
         .finally(() => {
             submitButton.textContent = "Сохранить";
             submitButton.disabled = false;
+            // Добавляем сброс валидации (если нужно)
+            const form = submitButton.closest('form');
+            if (form) {
+                form.querySelectorAll('.popup__input').forEach(input => {
+                    input.classList.remove(validationSettings.inputErrorClass);
+                });
+            }
+        });
+}*/
+// Функция обработки добавления новой карточки
+function handleCardFormSubmit(evt) {
+    if (isSaving) return; // Если уже идет сохранение, ничего не делаем
+    
+    evt.preventDefault();
+    isSaving = true; // Устанавливаем флаг
+    
+    const name = newCardName.value;
+    const link = newCardLink.value;
+    const submitButton = evt.target.querySelector('button');
+
+    submitButton.textContent = "Сохранение...";
+    submitButton.disabled = true;
+    addCardButton.disabled = true;
+
+    addNewCard({name, link})
+        .then(card => {
+            const cardElement = createCard(card, userId);
+            placesList.prepend(cardElement);
+            closeModal(cardPopup);
+            cardFormElement.reset();
+        })
+        .catch(err => console.error("Ошибка добавления карточки:", err))
+        .finally(() => {
+            isSaving = false; // Сбрасываем флаг
+            submitButton.textContent = "Сохранить";
+            submitButton.disabled = false;
+            addCardButton.disabled = false;
+
             // Добавляем сброс валидации (если нужно)
             const form = submitButton.closest('form');
             if (form) {
